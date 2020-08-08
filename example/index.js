@@ -6,7 +6,7 @@ import MapboxLegendControl from '../dist/index';
 import '../css/styles.css';
 
 $(function(){
-    mapboxgl.accessToken='pk.eyJ1IjoibmFyd2Fzc2NvIiwiYSI6ImNrOXIxOTFleTBvNGIzZ3A4b3docmE5cHQifQ.BqsnWbWZ2NwJZDWyOVWjXA'
+    // mapboxgl.accessToken='your mapbox access token'
     const map = new mapboxgl.Map({
         container: 'map',
         // style: 'mapbox://styles/mapbox/streets-v11',
