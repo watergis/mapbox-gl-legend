@@ -34,7 +34,7 @@ import { Map as MapboxMap } from "mapbox-gl";
 
 const map = new MapboxMap();
 //please add legend control after loading mapbox stylefiles, otherwise it causes errors...
-setTimeout(()=>{
+map.on('load', function() {
 const targets = {
         'pipeline': 'Pipeline',
         'meter': 'Water Meter',
@@ -49,7 +49,7 @@ const targets = {
         'dma': 'DMA'
 };
 map.addControl(new MapboxLegendControl(targets), 'top-right');
-}, 1000)
+});
 ```
 
 Specify your layers which you want to add the legend by the control.

@@ -17,8 +17,7 @@ $(function(){
     });
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    //please add legend control after loading mapbox stylefiles, otherwise it causes errors...
-    setTimeout(()=>{
+    map.on('load', function() {
         const targets = {
             'pipeline': 'Pipeline',
             'meter': 'Water Meter',
@@ -33,5 +32,5 @@ $(function(){
             'dma': 'DMA'
         };
         map.addControl(new MapboxLegendControl(targets), 'top-right');
-    }, 1000)
+    });
 })
