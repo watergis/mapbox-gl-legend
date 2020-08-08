@@ -30,9 +30,9 @@ open [http://localhost:8080](http://localhost:8080).
 ```ts
 import MapboxLegendControl from "@watergis/mapbox-gl-legend";
 import '@watergis/mapbox-gl-legend/css/styles.css';
-import { Map as MapboxMap } from "mapbox-gl";
+import mapboxgl from 'mapbox-gl';
 
-const map = new MapboxMap();
+const map = new mapboxgl.Map();
 //please add legend control after loading mapbox stylefiles, otherwise it causes errors...
 map.on('load', function() {
 const targets = {
