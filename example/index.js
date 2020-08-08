@@ -21,12 +21,13 @@ $(function(){
         const targets = {
             'pipeline': 'Pipeline',
             'meter': 'Water Meter',
-            'flowmeter': 'Flow Meter', 
+            'flow meter': 'Flow Meter', 
             'valve': 'Valve', 
             'firehydrant': 'Fire Hydrant', 
             'washout': 'Washout',
             'tank': 'Tank', 
-            'plant': 'Plant', 
+            'wtp': 'WTP', 
+            'intake': 'Intake', 
             'parcels': 'Parcels', 
             'village': 'Village', 
             'dma': 'DMA'

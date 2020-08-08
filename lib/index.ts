@@ -55,24 +55,30 @@ export default class MapboxLegendControl implements IControl
             if (!symbol) return;
             switch(symbol.element){
                 case 'div':
-                    if (!(symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
-                        return;
-                    }
-                    var img = document.createElement('img');
-                    img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
-                    img.alt = l.id;
-                    img.style.cssText = 'height: 15px;'
                     let label1 = document.createElement('label');
                     label1.textContent = this.targets[l.id];
-
                     var tr = document.createElement('TR');
                     var td1 = document.createElement('TD');
-                    td1.appendChild(img)
+                    if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
+                        var img = document.createElement('img');
+                        img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
+                        img.alt = l.id;
+                        img.style.cssText = 'height: 15px;'
+                        td1.appendChild(img)      
+                    }else{
+                        
+                    }
+                    td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
+                    td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
+                    td1.style.backgroundSize = symbol.attributes.style.backgroundSize;
+                    td1.style.opacity = symbol.attributes.style.opacity;
+
                     var td2 = document.createElement('TD');
                     td2.appendChild(label1)
                     tr.appendChild(td1);
                     tr.appendChild(td2);
                     table.appendChild(tr);
+
                     break;
                 case 'svg':
                     let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

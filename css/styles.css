@@ -44,7 +44,7 @@ table.legend-table{
     margin:0 auto;
     }
 td,th{
-    border: 0px none;
+    border:1px solid #ffffff;
     margin: 10px;
     padding:2px;
     text-align: left;
