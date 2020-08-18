@@ -43,7 +43,7 @@ table.legend-table{
     border-collapse:collapse;
     margin:0 auto;
     }
-td,th{
+td.legend-table-td,th.legend-table-th{
     border:1px solid #ffffff;
     margin: 10px;
     padding:2px;

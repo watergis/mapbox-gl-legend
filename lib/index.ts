@@ -59,6 +59,7 @@ export default class MapboxLegendControl implements IControl
                     label1.textContent = this.targets[l.id];
                     var tr = document.createElement('TR');
                     var td1 = document.createElement('TD');
+                    td1.className='legend-table-td';
                     if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
                         var img = document.createElement('img');
                         img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
@@ -74,6 +75,7 @@ export default class MapboxLegendControl implements IControl
                     td1.style.opacity = symbol.attributes.style.opacity;
 
                     var td2 = document.createElement('TD');
+                    td2.className='legend-table-td';
                     td2.appendChild(label1)
                     tr.appendChild(td1);
                     tr.appendChild(td2);
@@ -101,8 +103,10 @@ export default class MapboxLegendControl implements IControl
 
                     var tr = document.createElement('TR');
                     var td1 = document.createElement('TD');
+                    td1.className='legend-table-td';
                     td1.appendChild(svg)
                     var td2 = document.createElement('TD');
+                    td2.className='legend-table-td';
                     td2.appendChild(label2)
                     tr.appendChild(td1);
                     tr.appendChild(td2);
