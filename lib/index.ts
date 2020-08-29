@@ -1,5 +1,5 @@
 import { IControl, Map as MapboxMap } from "mapbox-gl";
-import LegendSymbol from './legend-symbol';
+import LegendSymbol from 'legend-symbol';
 
 /**
  * Mapbox GL Legend Control.
