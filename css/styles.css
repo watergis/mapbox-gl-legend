@@ -9,10 +9,9 @@
     border: none;
     cursor: pointer;
     display: block;
-    font-size: 14px;
-    padding: 8px 8px 6px;
-    text-align: right;
-    width: 100%;
+    /* padding: 8px 8px 6px; */
+    /* text-align: right; */
+    /* width: 100%; */
     height: auto;
 }
 
@@ -48,4 +47,17 @@ td.legend-table-td,th.legend-table-th{
     margin: 10px;
     padding:2px;
     text-align: left;
+}
+
+.mapboxgl-legend-close-button{
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+    border-radius: 0 3px 0 0;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 13px;
+    padding-top: 5px;
+    padding-right: 5px;
 }

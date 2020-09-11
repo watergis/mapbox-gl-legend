@@ -32,6 +32,8 @@ $(function(){
             'village': 'Village', 
             'dma': 'DMA'
         };
-        map.addControl(new MapboxLegendControl(targets), 'top-right');
+        map.addControl(new MapboxLegendControl(targets, {showDefault: false}), 'top-right');
+
+        map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-left');
     });
 })

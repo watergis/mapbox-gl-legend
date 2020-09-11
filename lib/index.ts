@@ -1,9 +1,14 @@
 import { IControl, Map as MapboxMap } from "mapbox-gl";
 import LegendSymbol from 'legend-symbol';
 
+type Options = {
+    showDefault: Boolean;
+}
+
 /**
  * Mapbox GL Legend Control.
  * @param {Object} targets - Object of layer.id and title
+ * @param {Boolean} options.showDefault true: it shows legend as default. false: legend will be closed as default
  */
 
 export default class MapboxLegendControl implements IControl
@@ -13,11 +18,18 @@ export default class MapboxLegendControl implements IControl
     private map?: MapboxMap;
     private legendContainer: HTMLElement;
     private legendButton: HTMLButtonElement;
+    private closeButton: HTMLButtonElement;
     private targets: { [key: string]: string };
+    private options: Options = {
+        showDefault: true,
+    };
 
-    constructor(targets:{ [key: string]: string })
+    constructor(targets:{ [key: string]: string }, options: Options)
     {
       this.targets = targets;
+      if (options){
+          this.options = options;
+      }
       this.onDocumentClick = this.onDocumentClick.bind(this);
     }
 
@@ -46,6 +58,15 @@ export default class MapboxLegendControl implements IControl
         this.controlContainer.appendChild(this.legendButton);
         this.controlContainer.appendChild(this.legendContainer);
         
+        this.closeButton = document.createElement("button");
+        this.closeButton.textContent = "x";
+        this.closeButton.classList.add("mapboxgl-legend-close-button");
+        this.closeButton.addEventListener("click", () => {
+            this.legendButton.style.display = "block";
+            this.legendContainer.style.display = "none";
+          });
+        this.legendContainer.appendChild(this.closeButton);
+
         var table = document.createElement('TABLE');
         table.className = 'legend-table';
         let layers = this.map.getStyle().layers;
@@ -118,6 +139,11 @@ export default class MapboxLegendControl implements IControl
         })
         this.legendContainer.appendChild(table)
 
+        if (this.options && this.options.showDefault == true){
+            this.legendContainer.style.display = "block";
+            this.legendButton.style.display = "none";
+        }
+
         return this.controlContainer;
     }
 
@@ -134,8 +160,10 @@ export default class MapboxLegendControl implements IControl
 
     private onDocumentClick(event: MouseEvent): void{
       if (this.controlContainer && !this.controlContainer.contains(event.target as Element) && this.legendContainer && this.legendButton) {
-      this.legendContainer.style.display = "none";
-      this.legendButton.style.display = "block";
+        if (this.options && this.options.showDefault !== true){
+            this.legendContainer.style.display = "none";
+            this.legendButton.style.display = "block";
+        }
       }
     }
 }
