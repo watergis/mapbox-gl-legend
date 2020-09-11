@@ -13,6 +13,7 @@ export default class MapboxLegendControl implements IControl
     private map?: MapboxMap;
     private legendContainer: HTMLElement;
     private legendButton: HTMLButtonElement;
+    private closeButton: HTMLButtonElement;
     private targets: { [key: string]: string };
 
     constructor(targets:{ [key: string]: string })
@@ -46,6 +47,15 @@ export default class MapboxLegendControl implements IControl
         this.controlContainer.appendChild(this.legendButton);
         this.controlContainer.appendChild(this.legendContainer);
         
+        this.closeButton = document.createElement("button");
+        this.closeButton.textContent = "x";
+        this.closeButton.classList.add("mapboxgl-legend-close-button");
+        this.closeButton.addEventListener("click", () => {
+            this.legendButton.style.display = "block";
+            this.legendContainer.style.display = "none";
+          });
+        this.legendContainer.appendChild(this.closeButton);
+
         var table = document.createElement('TABLE');
         table.className = 'legend-table';
         let layers = this.map.getStyle().layers;
