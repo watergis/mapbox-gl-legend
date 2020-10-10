@@ -13,6 +13,7 @@ npm i @watergis/mapbox-gl-legend --save
 ```
 
 ## Demo:
+![demo.gif](./demo.gif)
 
 See [demo](https://watergis.github.io/mapbox-gl-legend/#12/-1.08551/35.87063).
 

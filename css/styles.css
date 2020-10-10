@@ -3,6 +3,11 @@
     display: none;
 }
 
+.mapboxgl-legend-list{
+    overflow-y:scroll;
+    max-height: calc(100vh * 0.7);
+}
+
 .mapboxgl-ctrl-group .mapboxgl-legend-list button
 {
     background: none;
