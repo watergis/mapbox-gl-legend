@@ -66,3 +66,18 @@ td.legend-table-td,th.legend-table-th{
     padding-top: 5px;
     padding-right: 5px;
 }
+
+.mapboxgl-legend-title-label{
+    font-size: 14px; 
+    font-weight: bold; 
+    margin: 5px;
+}
+
+.mapboxgl-legend-onlyRendered-checkbox{
+    margin: 5px;
+}
+
+.mapboxgl-legend-onlyRendered-label{
+    font-size: 14px; 
+    margin: 5px;
+}

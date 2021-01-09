@@ -2,17 +2,19 @@ import { IControl, Map as MapboxMap } from "mapbox-gl";
 import LegendSymbol from 'legend-symbol';
 
 type Options = {
-    showDefault: Boolean;
-    showCheckbox: Boolean;
-    reverseOrder: Boolean;
+    showDefault: boolean;
+    showCheckbox: boolean;
+    reverseOrder: boolean;
+    onlyRendered: boolean;
 }
 
 /**
  * Mapbox GL Legend Control.
  * @param {Object} targets - Object of layer.id and title
- * @param {Boolean} options.showDefault true: it shows legend as default. false: legend will be closed as default
- * @param {Boolean} options.showCheckbox true: checkbox will be added for switching layer's visibility. false: checkbox will not be added.
- * @param {Boolean} options.reverseOrder true: layers will be ordered from top. false: layers will be ordered from bottom. If not specified, default value will be true.
+ * @param {boolean} options.showDefault true: it shows legend as default. false: legend will be closed as default
+ * @param {boolean} options.showCheckbox true: checkbox will be added for switching layer's visibility. false: checkbox will not be added.
+ * @param {boolean} options.reverseOrder true: layers will be ordered from top. false: layers will be ordered from bottom. If not specified, default value will be true.
+ * @param {boolean} options.onlyRendered true: only rendered layers will be shown on legend as default. false: all layers' legend will be shown as default. If not specified, default value will be true.
  */
 
 export default class MapboxLegendControl implements IControl
@@ -23,11 +25,15 @@ export default class MapboxLegendControl implements IControl
     private legendContainer: HTMLElement;
     private legendButton: HTMLButtonElement;
     private closeButton: HTMLButtonElement;
+    private legendTable: HTMLElement;
     private targets: { [key: string]: string };
+    private uncheckedLayers: { [key: string]: string } = {};
+    private onlyRendered: boolean;
     private options: Options = {
         showDefault: true,
         showCheckbox: true,
         reverseOrder: true,
+        onlyRendered: true,
     };
 
     constructor(targets:{ [key: string]: string }, options: Options)
@@ -36,6 +42,7 @@ export default class MapboxLegendControl implements IControl
       if (options){
           this.options = Object.assign(this.options, options);
       }
+      this.onlyRendered = this.options.onlyRendered;
       this.onDocumentClick = this.onDocumentClick.bind(this);
     }
 
@@ -43,6 +50,23 @@ export default class MapboxLegendControl implements IControl
     {
         const defaultPosition = "top-right";
         return defaultPosition;
+    }
+
+    private changeLayerVisibility(layer_id: string, checked)
+    {
+        if (checked) {
+            if (this.uncheckedLayers[layer_id]) delete this.uncheckedLayers[layer_id];
+            this.map?.setLayoutProperty(layer_id, 'visibility', 'visible');
+        }else{
+            this.uncheckedLayers[layer_id]=layer_id;
+            this.map?.setLayoutProperty(layer_id, 'visibility', 'none');
+        }
+        const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(layer_id);
+        for (let i in checkboxes){
+            if (typeof checkboxes[i] === 'number') continue;
+            // @ts-ignore
+            checkboxes[i].checked = checked;
+        }
     }
 
     /**
@@ -53,7 +77,7 @@ export default class MapboxLegendControl implements IControl
     private createLayerCheckbox(layer: mapboxgl.Layer): HTMLElement | undefined
     {
         if (!this.options.showCheckbox) return;
-        const map = this.map;
+        const this_ = this;
 
         // create checkbox for switching layer visibility
         const td = document.createElement('TD');
@@ -62,23 +86,23 @@ export default class MapboxLegendControl implements IControl
         checklayer.setAttribute('type', 'checkbox');
         checklayer.setAttribute('name', layer.id);
         checklayer.setAttribute('value', layer.id);
-        checklayer.checked = true;
+        const visibility = this.map?.getLayoutProperty(layer.id, 'visibility');
+        let layerChecked = true;
+        if (visibility && visibility === 'none'){
+            layerChecked = false
+        }else if (!visibility){
+            checklayer.checked = layerChecked;
+        }else{
+            this_.changeLayerVisibility(layer.id, layerChecked);
+        }
+        
+        // checklayer.checked = true;
         checklayer.addEventListener('click', function(e){
             // @ts-ignore
             const _id = e.target?.value;
             // @ts-ignore
             const _checked = e.target?.checked;
-            if (_checked) {
-                map?.setLayoutProperty(_id, 'visibility', 'visible');
-            }else{
-                map?.setLayoutProperty(_id, 'visibility', 'none');
-            }
-            const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(_id);
-            for (let i in checkboxes){
-                if (typeof checkboxes[i] === 'number') continue;
-                // @ts-ignore
-                checkboxes[i].checked = _checked;
-            }
+            this_.changeLayerVisibility(_id, _checked);
         });
         td.appendChild(checklayer) 
 
@@ -112,8 +136,6 @@ export default class MapboxLegendControl implements IControl
                     img.alt = layer.id;
                     img.style.cssText = 'height: 15px;'
                     td1.appendChild(img)      
-                }else{
-                    return;
                 }
                 td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
                 td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
@@ -158,6 +180,64 @@ export default class MapboxLegendControl implements IControl
         return tr;
     }
 
+    /**
+    update legend contents
+    */
+    private updateLegendControl()
+    {
+        const map = this.map;
+
+        // get current rendered layers
+        const visibleLayers = {};
+        if (map) {
+            const features = map.queryRenderedFeatures();
+            for (let feature of features) {
+                visibleLayers[feature.layer.id] = feature.layer;
+            }
+        }
+
+        let layers = map?.getStyle().layers;
+        if (layers) {
+            if (!this.legendTable){
+                this.legendTable = document.createElement('TABLE');
+                this.legendTable.className = 'legend-table';
+                this.legendContainer.appendChild(this.legendTable)
+            }
+            
+            while (this.legendTable.firstChild) {
+                this.legendTable.removeChild(this.legendTable.firstChild);
+            }
+            if (this.options.reverseOrder){
+                layers = layers.reverse();
+            }
+            layers.forEach(l=>{
+                if (visibleLayers[l.id] && this.uncheckedLayers[l.id]){
+                    delete this.uncheckedLayers[l.id];
+                }else if (this.uncheckedLayers[l.id]) {
+                    visibleLayers[l.id]=l
+                };
+
+                if ((this.targets === undefined) 
+                    // if target option is undefined, show all layers.
+                    || (this.targets && Object.keys(this.targets).length === 0) 
+                    // if no layer is specified, show all layers.
+                    || (this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))
+                    // if layers are speficied, only show these specific layers.
+                ){
+                    if (this.onlyRendered){
+                        // only show rendered layer
+                        if (!visibleLayers[l.id]) return;
+                    }
+                    const tr = this.getLayerLegend(l);
+                    if (!tr) return;
+                    this.legendTable.appendChild(tr);
+                }else{
+                    return;
+                }
+            })
+        }
+    }
+
     public onAdd(map: MapboxMap): HTMLElement
     {
         this.map = map;
@@ -186,31 +266,44 @@ export default class MapboxLegendControl implements IControl
           });
         this.legendContainer.appendChild(this.closeButton);
 
-        let layers = this.map.getStyle().layers;
-        if (layers) {
-            var table = document.createElement('TABLE');
-            table.className = 'legend-table';
-            if (this.options.reverseOrder){
-                layers = layers.reverse();
-            }
-            layers.forEach(l=>{
-                if ((this.targets === undefined) 
-                    // if target option is undefined, show all layers.
-                    || (this.targets && Object.keys(this.targets).length === 0) 
-                    // if no layer is specified, show all layers.
-                    || (this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))
-                    // if layers are speficied, only show these specific layers.
-                ){
-                    const tr = this.getLayerLegend(l);
-                    if (!tr) return;
-                    table.appendChild(tr);
-                }else{
-                    return;
-                }
-            })
-            this.legendContainer.appendChild(table)
-        }
+        const legendLabel = document.createElement('label');
+        legendLabel.classList.add("mapboxgl-legend-title-label");
+        legendLabel.textContent = "Legend";
+        this.legendContainer.appendChild(legendLabel)
+        this.legendContainer.appendChild(document.createElement("br"));
 
+        const checkOnlyRendered = document.createElement('input');
+        checkOnlyRendered.setAttribute('type', 'checkbox');
+        const checkboxOnlyRenderedId = `mapboxgl-legend-onlyrendered-checkbox-${Math.random()*100}`
+        checkOnlyRendered.setAttribute('id', checkboxOnlyRenderedId);
+        checkOnlyRendered.classList.add("mapboxgl-legend-onlyRendered-checkbox");
+        checkOnlyRendered.checked = this.onlyRendered;
+        const this_ = this;
+        checkOnlyRendered.addEventListener('click', function(e){
+            // @ts-ignore
+            const _checked = e.target?.checked;
+            this_.onlyRendered = (_checked)?true:false;
+            this_.updateLegendControl();
+        });
+        this.legendContainer.appendChild(checkOnlyRendered);
+        const onlyRenderedLabel = document.createElement('label');
+        onlyRenderedLabel.classList.add("mapboxgl-legend-onlyRendered-label");
+        onlyRenderedLabel.textContent = "Only rendered";
+        onlyRenderedLabel.htmlFor = checkboxOnlyRenderedId;
+        this.legendContainer.appendChild(onlyRenderedLabel);
+        this.legendContainer.appendChild(document.createElement("br"));
+
+        this.map.on('moveend', (eventData)=> {
+            this.updateLegendControl();
+        })
+        const afterLoadListener = () =>{
+            if (map.loaded()) {
+                this.updateLegendControl();
+                map.off('idle', afterLoadListener);
+            }
+        }
+        this.map.on('idle', afterLoadListener);
+        
         if (this.options && this.options.showDefault == true){
             this.legendContainer.style.display = "block";
             this.legendButton.style.display = "none";

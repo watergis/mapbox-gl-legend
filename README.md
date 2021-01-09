@@ -59,7 +59,7 @@ const targets = {
 };
 
 // add legend control without checkbox, and it will be hide as default
-map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false}), 'top-right');
+map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false, onlyRendered: false }), 'top-right');
 
 // add legend control with checkbox, and it will be shown as default
 map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-right');
@@ -84,6 +84,10 @@ Specify your layers which you want to add the legend by the control.
   - true: layers will be ordered from top. 
   - false: layers will be ordered from bottom. 
   - default value is `true` if you don't spefify the option.
+- onlyRendered
+  - true: only rendered layers will be shown on legend as default. 
+  - false: all layers' legend will be shown as default. 
+  - default value will be true.
 
 ## Contribution
 

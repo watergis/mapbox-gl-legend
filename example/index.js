@@ -37,10 +37,10 @@ $(function(){
             'village': 'Village', 
             'village_annotation': 'Village Label', 
             'dma': 'DMA',
-            'dma_annotation': 'DMA Label', 
+            'dma-annotation': 'DMA Label', 
         };
         // add legend control without checkbox, and it will be hide as default
-        map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false}), 'top-right');
+        map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false, onlyRendered: false}), 'top-right');
 
         // add legend control with checkbox, and it will be shown as default
         map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-right');
