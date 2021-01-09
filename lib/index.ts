@@ -39,6 +39,97 @@ export default class MapboxLegendControl implements IControl
         return defaultPosition;
     }
 
+    private getLayerLegend(layer: mapboxgl.Layer): HTMLElement | undefined
+    {
+        const map = this.map;
+        let symbol = LegendSymbol({map: map, layer:layer});
+        if (!symbol) return;
+        let label1 = document.createElement('label');
+        label1.textContent = this.targets[layer.id];
+        var tr = document.createElement('TR');
+
+        // create checkbox for switching layer visibility
+        var td0 = document.createElement('TD');
+        td0.className='legend-table-td';
+        var checklayer = document.createElement('input');
+        checklayer.setAttribute('type', 'checkbox');
+        checklayer.setAttribute('name', layer.id);
+        checklayer.setAttribute('value', layer.id);
+        checklayer.checked = true;
+        checklayer.addEventListener('click', function(e){
+            // @ts-ignore
+            const _id = e.target?.value;
+            // @ts-ignore
+            const _checked = e.target?.checked;
+            if (_checked) {
+                map?.setLayoutProperty(_id, 'visibility', 'visible');
+            }else{
+                map?.setLayoutProperty(_id, 'visibility', 'none');
+            }
+            const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(_id);
+            for (let i in checkboxes){
+                if (typeof checkboxes[i] === 'number') continue;
+                // @ts-ignore
+                checkboxes[i].checked = _checked;
+            }
+        });
+        td0.appendChild(checklayer) 
+
+        // create legend symbol
+        var td1 = document.createElement('TD');
+        td1.className='legend-table-td';
+        switch(symbol.element){
+            case 'div':
+                if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
+                    var img = document.createElement('img');
+                    img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
+                    img.alt = layer.id;
+                    img.style.cssText = 'height: 15px;'
+                    td1.appendChild(img)      
+                }else{
+                    return;
+                }
+                td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
+                td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
+                td1.style.backgroundSize = symbol.attributes.style.backgroundSize;
+                td1.style.opacity = symbol.attributes.style.opacity;
+
+                break;
+            case 'svg':
+                let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.style.cssText = 'height: 15px;'
+                svg.setAttributeNS(null, 'version', '1.1')
+                Object.keys(symbol.attributes).forEach(k=>{
+                    svg.setAttribute(k, symbol.attributes[k]);
+                    let group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    symbol.children.forEach(child=>{
+                        var c = document.createElementNS('http://www.w3.org/2000/svg', child.element);
+                        Object.keys(child.attributes).forEach(k2=>{
+                            c.setAttributeNS(null, k2, child.attributes[k2]);
+                        })
+                        group.appendChild(c);
+                    })
+                    svg.appendChild(group);
+                })
+                var label2 = document.createElement('label');
+                label2.textContent = this.targets[layer.id];
+                td1.appendChild(svg)
+                break;
+            default:
+                return;
+        }
+
+        // create layer label
+        var td2 = document.createElement('TD');
+        td2.className='legend-table-td';
+        td2.appendChild(label1)
+        
+        tr.appendChild(td0);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        return tr;
+    }
+
     public onAdd(map: MapboxMap): HTMLElement
     {
         this.map = map;
@@ -71,127 +162,10 @@ export default class MapboxLegendControl implements IControl
         table.className = 'legend-table';
         let layers = this.map.getStyle().layers;
         layers?.forEach(l=>{
-            if (!(this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id)))return;
-            let symbol = LegendSymbol({map: this.map, layer:l});
-            if (!symbol) return;
-            switch(symbol.element){
-                case 'div':
-                    let label1 = document.createElement('label');
-                    label1.textContent = this.targets[l.id];
-                    var tr = document.createElement('TR');
-
-                    var td0 = document.createElement('TD');
-                    td0.className='legend-table-td';
-                    var checklayer = document.createElement('input');
-                    checklayer.setAttribute('type', 'checkbox');
-                    checklayer.setAttribute('name', l.id);
-                    checklayer.setAttribute('value', l.id);
-                    checklayer.checked = true;
-                    checklayer.addEventListener('click', function(e){
-                        // @ts-ignore
-                        const _id = e.target?.value;
-                        // @ts-ignore
-                        const _checked = e.target?.checked;
-                        if (_checked) {
-                            map.setLayoutProperty(_id, 'visibility', 'visible');
-                        }else{
-                            map.setLayoutProperty(_id, 'visibility', 'none');
-                        }
-                        const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(_id);
-                        for (let i in checkboxes){
-                            if (typeof checkboxes[i] === 'number') continue;
-                            // @ts-ignore
-                            checkboxes[i].checked = _checked;
-                        }
-                    });
-                    td0.appendChild(checklayer) 
-                    
-                    var td1 = document.createElement('TD');
-                    td1.className='legend-table-td';
-                    if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
-                        var img = document.createElement('img');
-                        img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
-                        img.alt = l.id;
-                        img.style.cssText = 'height: 15px;'
-                        td1.appendChild(img)      
-                    }else{
-                        
-                    }
-                    td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
-                    td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
-                    td1.style.backgroundSize = symbol.attributes.style.backgroundSize;
-                    td1.style.opacity = symbol.attributes.style.opacity;
-
-                    var td2 = document.createElement('TD');
-                    td2.className='legend-table-td';
-                    td2.appendChild(label1)
-                    tr.appendChild(td0);
-                    tr.appendChild(td1);
-                    tr.appendChild(td2);
-                    table.appendChild(tr);
-
-                    break;
-                case 'svg':
-                    let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.style.cssText = 'height: 15px;'
-                    svg.setAttributeNS(null, 'version', '1.1')
-                    Object.keys(symbol.attributes).forEach(k=>{
-                        svg.setAttribute(k, symbol.attributes[k]);
-                        let group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                        symbol.children.forEach(child=>{
-                            var c = document.createElementNS('http://www.w3.org/2000/svg', child.element);
-                            Object.keys(child.attributes).forEach(k2=>{
-                                c.setAttributeNS(null, k2, child.attributes[k2]);
-                            })
-                            group.appendChild(c);
-                        })
-                        svg.appendChild(group);
-                    })
-                    var label2 = document.createElement('label');
-                    label2.textContent = this.targets[l.id];
-
-                    var tr = document.createElement('TR');
-
-                    var td0 = document.createElement('TD');
-                    td0.className='legend-table-td';
-                    var checklayer = document.createElement('input');
-                    checklayer.setAttribute('type', 'checkbox');
-                    checklayer.setAttribute('name', l.id);
-                    checklayer.setAttribute('value', l.id);
-                    checklayer.checked = true;
-                    checklayer.addEventListener('click', function(e){
-                        // @ts-ignore
-                        const _id = e.target?.value;
-                        // @ts-ignore
-                        const _checked = e.target?.checked;
-                        if (_checked) {
-                            map.setLayoutProperty(_id, 'visibility', 'visible');
-                        }else{
-                            map.setLayoutProperty(_id, 'visibility', 'none');
-                        }
-                        const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(_id);
-                        for (let i in checkboxes){
-                            if (typeof checkboxes[i] === 'number') continue;
-                            // @ts-ignore
-                            checkboxes[i].checked = _checked;
-                        }
-                    });
-                    td0.appendChild(checklayer) 
-                    
-                    var td1 = document.createElement('TD');
-                    td1.className='legend-table-td';
-                    td1.appendChild(svg)
-                    var td2 = document.createElement('TD');
-                    td2.className='legend-table-td';
-                    td2.appendChild(label2)
-                    tr.appendChild(td0);
-                    tr.appendChild(td1);
-                    tr.appendChild(td2);
-                    table.appendChild(tr);
-                    break;
-                default:
-                    break;
-            }
+            if (!(this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))) return;
+            const tr = this.getLayerLegend(l);
+            if (!tr) return;
+            table.appendChild(tr);
         })
         this.legendContainer.appendChild(table)
 
