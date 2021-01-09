@@ -135,7 +135,7 @@ export default class MapboxLegendControl implements IControl
                     svg.appendChild(group);
                 })
                 var label2 = document.createElement('label');
-                label2.textContent = this.targets[layer.id];
+                label2.textContent = (this.targets && this.targets[layer.id])?this.targets[layer.id]:layer.id;
                 td1.appendChild(svg)
                 break;
             default:
@@ -146,7 +146,7 @@ export default class MapboxLegendControl implements IControl
         var td2 = document.createElement('TD');
         td2.className='legend-table-td';
         let label1 = document.createElement('label');
-        label1.textContent = this.targets[layer.id];
+        label1.textContent = (this.targets && this.targets[layer.id])?this.targets[layer.id]:layer.id;
         td2.appendChild(label1)
 
         // tr.appendChild(td0);
@@ -187,10 +187,19 @@ export default class MapboxLegendControl implements IControl
         table.className = 'legend-table';
         let layers = this.map.getStyle().layers;
         layers?.forEach(l=>{
-            if (!(this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))) return;
-            const tr = this.getLayerLegend(l);
-            if (!tr) return;
-            table.appendChild(tr);
+            if ((this.targets === undefined) 
+                // if target option is undefined, show all layers.
+                || (this.targets && Object.keys(this.targets).length === 0) 
+                // if no layer is specified, show all layers.
+                || (this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))
+                // if layers are speficied, only show these specific layers.
+            ){
+                const tr = this.getLayerLegend(l);
+                if (!tr) return;
+                table.appendChild(tr);
+            }else{
+                return;
+            }
         })
         this.legendContainer.appendChild(table)
 
