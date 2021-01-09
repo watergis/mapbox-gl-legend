@@ -79,6 +79,33 @@ export default class MapboxLegendControl implements IControl
                     let label1 = document.createElement('label');
                     label1.textContent = this.targets[l.id];
                     var tr = document.createElement('TR');
+
+                    var td0 = document.createElement('TD');
+                    td0.className='legend-table-td';
+                    var checklayer = document.createElement('input');
+                    checklayer.setAttribute('type', 'checkbox');
+                    checklayer.setAttribute('name', l.id);
+                    checklayer.setAttribute('value', l.id);
+                    checklayer.checked = true;
+                    checklayer.addEventListener('click', function(e){
+                        // @ts-ignore
+                        const _id = e.target?.value;
+                        // @ts-ignore
+                        const _checked = e.target?.checked;
+                        if (_checked) {
+                            map.setLayoutProperty(_id, 'visibility', 'visible');
+                        }else{
+                            map.setLayoutProperty(_id, 'visibility', 'none');
+                        }
+                        const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(_id);
+                        for (let i in checkboxes){
+                            if (typeof checkboxes[i] === 'number') continue;
+                            // @ts-ignore
+                            checkboxes[i].checked = _checked;
+                        }
+                    });
+                    td0.appendChild(checklayer) 
+                    
                     var td1 = document.createElement('TD');
                     td1.className='legend-table-td';
                     if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
@@ -98,6 +125,7 @@ export default class MapboxLegendControl implements IControl
                     var td2 = document.createElement('TD');
                     td2.className='legend-table-td';
                     td2.appendChild(label1)
+                    tr.appendChild(td0);
                     tr.appendChild(td1);
                     tr.appendChild(td2);
                     table.appendChild(tr);
@@ -123,12 +151,40 @@ export default class MapboxLegendControl implements IControl
                     label2.textContent = this.targets[l.id];
 
                     var tr = document.createElement('TR');
+
+                    var td0 = document.createElement('TD');
+                    td0.className='legend-table-td';
+                    var checklayer = document.createElement('input');
+                    checklayer.setAttribute('type', 'checkbox');
+                    checklayer.setAttribute('name', l.id);
+                    checklayer.setAttribute('value', l.id);
+                    checklayer.checked = true;
+                    checklayer.addEventListener('click', function(e){
+                        // @ts-ignore
+                        const _id = e.target?.value;
+                        // @ts-ignore
+                        const _checked = e.target?.checked;
+                        if (_checked) {
+                            map.setLayoutProperty(_id, 'visibility', 'visible');
+                        }else{
+                            map.setLayoutProperty(_id, 'visibility', 'none');
+                        }
+                        const checkboxes: NodeListOf<HTMLElement> = document.getElementsByName(_id);
+                        for (let i in checkboxes){
+                            if (typeof checkboxes[i] === 'number') continue;
+                            // @ts-ignore
+                            checkboxes[i].checked = _checked;
+                        }
+                    });
+                    td0.appendChild(checklayer) 
+                    
                     var td1 = document.createElement('TD');
                     td1.className='legend-table-td';
                     td1.appendChild(svg)
                     var td2 = document.createElement('TD');
                     td2.className='legend-table-td';
                     td2.appendChild(label2)
+                    tr.appendChild(td0);
                     tr.appendChild(td1);
                     tr.appendChild(td2);
                     table.appendChild(tr);
