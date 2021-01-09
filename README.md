@@ -51,9 +51,9 @@ const targets = {
         'dma': 'DMA'
 };
 // Legend will be hide as default if showDefault is false
-map.addControl(new MapboxLegendControl(targets, {showDefault: false}), 'top-right');
+map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false}), 'top-right');
 // Legend will be shown as default if showDefault is true
-map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-right');
+map.addControl(new MapboxLegendControl(targets, {showDefault: true, showCheckbox: true}), 'bottom-right');
 });
 ```
 
@@ -63,6 +63,10 @@ Specify your layers which you want to add the legend by the control.
 - showDefault
   - true: Legend will be shown as default
   - false: Legend will be hide as default
+  - default value is `true` if you don't specify the options.
+- showCheckbox
+  - true: the checkbox for switching visibility will be added as default
+  - false: the checkbox will not be added as default
   - default value is `true` if you don't specify the options.
 
 ## Contribution

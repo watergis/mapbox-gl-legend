@@ -3,12 +3,14 @@ import LegendSymbol from 'legend-symbol';
 
 type Options = {
     showDefault: Boolean;
+    showCheckbox: Boolean;
 }
 
 /**
  * Mapbox GL Legend Control.
  * @param {Object} targets - Object of layer.id and title
  * @param {Boolean} options.showDefault true: it shows legend as default. false: legend will be closed as default
+ * @param {Boolean} options.showCheckbox true: checkbox will be added for switching layer's visibility. false: checkbox will not be added.
  */
 
 export default class MapboxLegendControl implements IControl
@@ -22,13 +24,14 @@ export default class MapboxLegendControl implements IControl
     private targets: { [key: string]: string };
     private options: Options = {
         showDefault: true,
+        showCheckbox: true,
     };
 
     constructor(targets:{ [key: string]: string }, options: Options)
     {
       this.targets = targets;
       if (options){
-          this.options = options;
+          this.options = Object.assign(this.options, options);
       }
       this.onDocumentClick = this.onDocumentClick.bind(this);
     }
@@ -39,19 +42,20 @@ export default class MapboxLegendControl implements IControl
         return defaultPosition;
     }
 
-    private getLayerLegend(layer: mapboxgl.Layer): HTMLElement | undefined
+    /**
+     * create checkbox for switching layer visibility
+     * @param layer mapboxgl.Layer object
+     * @returns HTMLElement | undefined return TD Element
+     */
+    private createLayerCheckbox(layer: mapboxgl.Layer): HTMLElement | undefined
     {
+        if (!this.options.showCheckbox) return;
         const map = this.map;
-        let symbol = LegendSymbol({map: map, layer:layer});
-        if (!symbol) return;
-        let label1 = document.createElement('label');
-        label1.textContent = this.targets[layer.id];
-        var tr = document.createElement('TR');
 
         // create checkbox for switching layer visibility
-        var td0 = document.createElement('TD');
-        td0.className='legend-table-td';
-        var checklayer = document.createElement('input');
+        const td = document.createElement('TD');
+        td.className='legend-table-td';
+        const checklayer = document.createElement('input');
         checklayer.setAttribute('type', 'checkbox');
         checklayer.setAttribute('name', layer.id);
         checklayer.setAttribute('value', layer.id);
@@ -73,7 +77,26 @@ export default class MapboxLegendControl implements IControl
                 checkboxes[i].checked = _checked;
             }
         });
-        td0.appendChild(checklayer) 
+        td.appendChild(checklayer) 
+
+        return td;
+    }
+
+    /**
+     * Create and return a layer's legend row
+     * @param layer mapboxgl.Layer object
+     * @returns HTMLElement | undefined return TR Element
+     */
+    private getLayerLegend(layer: mapboxgl.Layer): HTMLElement | undefined
+    {
+        const map = this.map;
+        let symbol = LegendSymbol({map: map, layer:layer});
+        if (!symbol) return;
+        
+        var tr = document.createElement('TR');
+
+        const td0 = this.createLayerCheckbox(layer);
+        if (td0) tr.appendChild(td0);
 
         // create legend symbol
         var td1 = document.createElement('TD');
@@ -122,9 +145,11 @@ export default class MapboxLegendControl implements IControl
         // create layer label
         var td2 = document.createElement('TD');
         td2.className='legend-table-td';
+        let label1 = document.createElement('label');
+        label1.textContent = this.targets[layer.id];
         td2.appendChild(label1)
-        
-        tr.appendChild(td0);
+
+        // tr.appendChild(td0);
         tr.appendChild(td1);
         tr.appendChild(td2);
         return tr;
