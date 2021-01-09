@@ -87,16 +87,22 @@ export default class MapboxLegendControl implements IControl
         checklayer.setAttribute('name', layer.id);
         checklayer.setAttribute('value', layer.id);
         const visibility = this.map?.getLayoutProperty(layer.id, 'visibility');
-        let layerChecked = true;
-        if (visibility && visibility === 'none'){
-            layerChecked = false
-        }else if (!visibility){
-            checklayer.checked = layerChecked;
+        if (!visibility){
+            checklayer.checked = true;
         }else{
-            this_.changeLayerVisibility(layer.id, layerChecked);
+            let _checked = true;       
+            switch(visibility){
+                case 'none':
+                    _checked = false;
+                    break;
+                case 'visible':
+                    _checked = true;
+                    checklayer.checked = true;
+                    break;
+            }
+            this_.changeLayerVisibility(layer.id, _checked);
         }
-        
-        // checklayer.checked = true;
+
         checklayer.addEventListener('click', function(e){
             // @ts-ignore
             const _id = e.target?.value;
@@ -321,6 +327,11 @@ export default class MapboxLegendControl implements IControl
       this.controlContainer.parentNode.removeChild(this.controlContainer);
       document.removeEventListener("click", this.onDocumentClick);
       this.map = undefined;
+    }
+
+    public redraw(): void
+    {
+        this.updateLegendControl();
     }
 
     private onDocumentClick(event: MouseEvent): void{
