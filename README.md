@@ -37,23 +37,35 @@ const map = new mapboxgl.Map();
 //please add legend control after loading mapbox stylefiles, otherwise it causes errors...
 map.on('load', function() {
 const targets = {
-        'pipeline': 'Pipeline',
-        'meter': 'Water Meter',
-        'flow meter': 'Flow Meter', 
-        'valve': 'Valve', 
-        'firehydrant': 'Fire Hydrant', 
-        'washout': 'Washout',
-        'tank': 'Tank', 
-        'wtp': 'WTP', 
-        'intake': 'Intake', 
-        'parcels': 'Parcels', 
-        'village': 'Village', 
-        'dma': 'DMA'
+  'pipeline': 'Pipeline',
+  'pipeline_annotation': 'Pipeline Label', 
+  'meter': 'Water Meter',
+  'flow meter': 'Flow Meter', 
+  'valve': 'Valve', 
+  'firehydrant': 'Fire Hydrant', 
+  'washout': 'Washout',
+  'tank': 'Tank', 
+  'tank_annotation': 'Tank Label', 
+  'wtp': 'WTP', 
+  'wtp_annotation': 'WTP Label', 
+  'intake': 'Intake', 
+  'intake_annotation': 'Intake Label', 
+  'parcels': 'Parcels', 
+  'parcels_annotation': 'Parcels Label', 
+  'village': 'Village', 
+  'village_annotation': 'Village Label', 
+  'dma': 'DMA',
+  'dma_annotation': 'DMA Label', 
 };
-// Legend will be hide as default if showDefault is false
+
+// add legend control without checkbox, and it will be hide as default
 map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false}), 'top-right');
-// Legend will be shown as default if showDefault is true
-map.addControl(new MapboxLegendControl(targets, {showDefault: true, showCheckbox: true}), 'bottom-right');
+
+// add legend control with checkbox, and it will be shown as default
+map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-right');
+
+// add legend control with all layers, and it reverse layer order
+map.addControl(new MapboxLegendControl({}, {reverseOrder: false}), 'bottom-left');
 });
 ```
 
@@ -63,11 +75,15 @@ Specify your layers which you want to add the legend by the control.
 - showDefault
   - true: Legend will be shown as default
   - false: Legend will be hide as default
-  - default value is `true` if you don't specify the options.
+  - default value is `true` if you don't specify the option.
 - showCheckbox
   - true: the checkbox for switching visibility will be added as default
   - false: the checkbox will not be added as default
-  - default value is `true` if you don't specify the options.
+  - default value is `true` if you don't specify the option.
+- reverseOrder
+  - true: layers will be ordered from top. 
+  - false: layers will be ordered from bottom. 
+  - default value is `true` if you don't spefify the option.
 
 ## Contribution
 

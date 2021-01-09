@@ -4,6 +4,7 @@ import LegendSymbol from 'legend-symbol';
 type Options = {
     showDefault: Boolean;
     showCheckbox: Boolean;
+    reverseOrder: Boolean;
 }
 
 /**
@@ -11,6 +12,7 @@ type Options = {
  * @param {Object} targets - Object of layer.id and title
  * @param {Boolean} options.showDefault true: it shows legend as default. false: legend will be closed as default
  * @param {Boolean} options.showCheckbox true: checkbox will be added for switching layer's visibility. false: checkbox will not be added.
+ * @param {Boolean} options.reverseOrder true: layers will be ordered from top. false: layers will be ordered from bottom. If not specified, default value will be true.
  */
 
 export default class MapboxLegendControl implements IControl
@@ -25,6 +27,7 @@ export default class MapboxLegendControl implements IControl
     private options: Options = {
         showDefault: true,
         showCheckbox: true,
+        reverseOrder: true,
     };
 
     constructor(targets:{ [key: string]: string }, options: Options)
@@ -183,25 +186,30 @@ export default class MapboxLegendControl implements IControl
           });
         this.legendContainer.appendChild(this.closeButton);
 
-        var table = document.createElement('TABLE');
-        table.className = 'legend-table';
         let layers = this.map.getStyle().layers;
-        layers?.forEach(l=>{
-            if ((this.targets === undefined) 
-                // if target option is undefined, show all layers.
-                || (this.targets && Object.keys(this.targets).length === 0) 
-                // if no layer is specified, show all layers.
-                || (this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))
-                // if layers are speficied, only show these specific layers.
-            ){
-                const tr = this.getLayerLegend(l);
-                if (!tr) return;
-                table.appendChild(tr);
-            }else{
-                return;
+        if (layers) {
+            var table = document.createElement('TABLE');
+            table.className = 'legend-table';
+            if (this.options.reverseOrder){
+                layers = layers.reverse();
             }
-        })
-        this.legendContainer.appendChild(table)
+            layers.forEach(l=>{
+                if ((this.targets === undefined) 
+                    // if target option is undefined, show all layers.
+                    || (this.targets && Object.keys(this.targets).length === 0) 
+                    // if no layer is specified, show all layers.
+                    || (this.targets && Object.keys(this.targets).map((id:string)=>{return id;}).includes(l.id))
+                    // if layers are speficied, only show these specific layers.
+                ){
+                    const tr = this.getLayerLegend(l);
+                    if (!tr) return;
+                    table.appendChild(tr);
+                }else{
+                    return;
+                }
+            })
+            this.legendContainer.appendChild(table)
+        }
 
         if (this.options && this.options.showDefault == true){
             this.legendContainer.style.display = "block";

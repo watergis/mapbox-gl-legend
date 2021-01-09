@@ -45,7 +45,7 @@ $(function(){
         // add legend control with checkbox, and it will be shown as default
         map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-right');
 
-        // add legend control with all layers
-        map.addControl(new MapboxLegendControl({}), 'bottom-left');
+        // add legend control with all layers, and it reverse layer order
+        map.addControl(new MapboxLegendControl({}, {reverseOrder: false}), 'bottom-left');
     });
 })
