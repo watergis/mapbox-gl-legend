@@ -1,7 +1,7 @@
 import { IControl, Map as MapboxMap } from "mapbox-gl";
 import LegendSymbol from 'legend-symbol';
 
-type Options = {
+export type Options = {
     showDefault: boolean;
     showCheckbox: boolean;
     reverseOrder: boolean;
