@@ -1,6 +1,6 @@
 {
   "name": "@watergis/mapbox-gl-legend",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "This module adds legend control which is able to create legend panel from mapbox style to mapbox-gl",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-style-spec": "^13.18.1",
-    "legend-symbol": "git+https://github.com/orangemug/legend-symbol.git",
+    "legend-symbol": "git+https://github.com/watergis/legend-symbol.git#db9e9f6",
     "mapbox-gl": "^1.13.0"
   }
 }

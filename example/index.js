@@ -38,6 +38,9 @@ $(function(){
             'village_annotation': 'Village Label', 
             'dma': 'DMA',
             'dma-annotation': 'DMA Label', 
+            'contour-line': 'Countour',
+            'contour-label': 'Contour Label',
+            'hillshade': 'Hillshade'
         };
         // add legend control without checkbox, and it will be hide as default
         map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false, onlyRendered: false}), 'top-right');
