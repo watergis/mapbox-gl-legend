@@ -136,7 +136,7 @@ export default class MapboxLegendControl implements IControl
         td1.className='legend-table-td';
         switch(symbol.element){
             case 'div':
-                if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
+                if ((symbol.attributes.style.backgroundImage && !["url(undefined)","url(null)"].includes(symbol.attributes.style.backgroundImage))){
                     var img = document.createElement('img');
                     img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
                     img.alt = layer.id;

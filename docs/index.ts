@@ -45,7 +45,7 @@ import '../css/styles.css';
         let options : Options = {
             showDefault: false, 
             showCheckbox: false, 
-            onlyRendered: false,
+            onlyRendered: true,
             reverseOrder: true
         }
         map.addControl(new MapboxLegendControl(targets, options), 'top-right');
@@ -63,7 +63,7 @@ import '../css/styles.css';
         options  = {
             showDefault: true, 
             showCheckbox: true, 
-            onlyRendered: true,
+            onlyRendered: false,
             reverseOrder: true
         }
         map.addControl(new MapboxLegendControl({}, options), 'bottom-left');
