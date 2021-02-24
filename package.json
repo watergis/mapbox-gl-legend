@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-style-spec": "^13.19.0",
-    "legend-symbol": "git+https://github.com/watergis/legend-symbol.git#db9e9f6",
+    "axios": "^0.21.1",
+    "legend-symbol": "git+https://github.com/watergis/legend-symbol.git#develop",
     "mapbox-gl": "^1.13.1"
   }
 }
