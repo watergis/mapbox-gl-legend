@@ -1,11 +1,10 @@
-import $ from 'jquery';
 import mapboxgl from 'mapbox-gl';
 // import MapboxAreaSwitcherControl from '../dist/index';
 // import LegendSymbol from '../dist/legend-symbol';
-import MapboxLegendControl from '../dist/index';
+import { default as MapboxLegendControl, Options} from '../lib/index';
 import '../css/styles.css';
 
-$(function(){
+(()=>{
     // mapboxgl.accessToken='your mapbox access token'
     const map = new mapboxgl.Map({
         container: 'map',
@@ -43,12 +42,30 @@ $(function(){
             'hillshade': 'Hillshade'
         };
         // add legend control without checkbox, and it will be hide as default
-        map.addControl(new MapboxLegendControl(targets, {showDefault: false, showCheckbox: false, onlyRendered: false}), 'top-right');
+        let options : Options = {
+            showDefault: false, 
+            showCheckbox: false, 
+            onlyRendered: true,
+            reverseOrder: true
+        }
+        map.addControl(new MapboxLegendControl(targets, options), 'top-right');
 
         // add legend control with checkbox, and it will be shown as default
-        map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-right');
+        options  = {
+            showDefault: true, 
+            showCheckbox: true, 
+            onlyRendered: true,
+            reverseOrder: false
+        }
+        map.addControl(new MapboxLegendControl(targets, options), 'bottom-right');
 
         // add legend control with all layers, and it reverse layer order
-        map.addControl(new MapboxLegendControl({}, {reverseOrder: false}), 'bottom-left');
+        options  = {
+            showDefault: true, 
+            showCheckbox: true, 
+            onlyRendered: false,
+            reverseOrder: true
+        }
+        map.addControl(new MapboxLegendControl({}, options), 'bottom-left');
     });
-})
+})()

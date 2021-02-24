@@ -1,7 +1,9 @@
 import { IControl, Map as MapboxMap } from "mapbox-gl";
 import LegendSymbol from 'legend-symbol';
+import axios from 'axios';
 
-type Options = {
+
+export type Options = {
     showDefault: boolean;
     showCheckbox: boolean;
     reverseOrder: boolean;
@@ -34,6 +36,10 @@ export default class MapboxLegendControl implements IControl
         showCheckbox: true,
         reverseOrder: true,
         onlyRendered: true,
+    };
+    private sprite = {
+        image: HTMLImageElement,
+        json: JSON
     };
 
     constructor(targets:{ [key: string]: string }, options: Options)
@@ -123,9 +129,10 @@ export default class MapboxLegendControl implements IControl
     private getLayerLegend(layer: mapboxgl.Layer): HTMLElement | undefined
     {
         const map = this.map;
-        let symbol = LegendSymbol({map: map, layer:layer});
+        const zoom = map?.getZoom();
+        const sprite = this.sprite;
+        let symbol = LegendSymbol({sprite, zoom, layer});
         if (!symbol) return;
-        
         var tr = document.createElement('TR');
 
         const td0 = this.createLayerCheckbox(layer);
@@ -136,22 +143,23 @@ export default class MapboxLegendControl implements IControl
         td1.className='legend-table-td';
         switch(symbol.element){
             case 'div':
-                if ((symbol.attributes.style.backgroundImage && symbol.attributes.style.backgroundImage !== "url(undefined)")){
+                if ((symbol.attributes.style.backgroundImage && !["url(undefined)","url(null)"].includes(symbol.attributes.style.backgroundImage))){
                     var img = document.createElement('img');
                     img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
                     img.alt = layer.id;
-                    img.style.cssText = 'height: 15px;'
+                    img.style.cssText = `height: 17px;`
                     td1.appendChild(img)      
                 }
                 td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
                 td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
                 td1.style.backgroundSize = symbol.attributes.style.backgroundSize;
+                td1.style.backgroundRepeat = symbol.attributes.style.backgroundRepeat;
                 td1.style.opacity = symbol.attributes.style.opacity;
 
                 break;
             case 'svg':
                 let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.style.cssText = 'height: 15px;'
+                svg.style.cssText = 'height: 17px;'
                 svg.setAttributeNS(null, 'version', '1.1')
                 Object.keys(symbol.attributes).forEach(k=>{
                     svg.setAttribute(k, symbol.attributes[k]);
@@ -302,8 +310,14 @@ export default class MapboxLegendControl implements IControl
         this.map.on('moveend', (eventData)=> {
             this.updateLegendControl();
         })
-        const afterLoadListener = () =>{
+        const afterLoadListener = async() =>{
             if (map.loaded()) {
+                const style = map.getStyle();
+                const promise = Promise.all([
+                    this.loadImage(`${style.sprite}@2x.png`),
+                    this.loadJson(`${style.sprite}.json`),
+                ]);
+                await promise.then(([image, json]) => {this.setSprite(image, json)});
                 this.updateLegendControl();
                 map.off('idle', afterLoadListener);
             }
@@ -341,5 +355,36 @@ export default class MapboxLegendControl implements IControl
             this.legendButton.style.display = "block";
         }
       }
+    }
+
+    private setSprite(image, json){
+        this.sprite = {
+            image,
+            json
+        }
+    }
+
+    private loadImage(url:string){
+        let cancelled = false;
+        const promise = new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => {
+            if (!cancelled) resolve(img);
+            }
+            img.onerror = e => {
+            if (!cancelled) reject(e);
+            };
+            img.src = url;
+        });
+        //@ts-ignore
+        promise.cancel = () => {
+            cancelled = true;
+        }
+        return promise;
+    }
+
+    private loadJson (url:string){
+        return axios.get(url, { responseType: 'json'}).then(res=> res.data)
     }
 }

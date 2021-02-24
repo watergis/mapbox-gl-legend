@@ -1,19 +1,19 @@
-const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-    entry: './example/index.js',
-    plugins: [
-        new webpack.ProvidePlugin({
-            Promise: 'es6-promise',
-        }),
-    ],
+    mode: 'development',
+    entry: './docs/index.ts',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'docs'),
     },
     module: {
         rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -23,7 +23,11 @@ module.exports = {
             },
         ],
     },
-    mode: 'production',
+    resolve: {
+        extensions: [
+          '.ts', '.js',
+        ],
+    },
     devtool: 'inline-source-map',
     devServer: {
         watchContentBase: true,
