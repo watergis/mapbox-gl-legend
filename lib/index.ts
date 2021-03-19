@@ -1,4 +1,4 @@
-import { IControl, Map as MapboxMap } from "mapbox-gl";
+import { accessToken, IControl, Map as MapboxMap } from "mapbox-gl";
 import LegendSymbol from 'legend-symbol';
 import axios from 'axios';
 
@@ -313,9 +313,18 @@ export default class MapboxLegendControl implements IControl
         const afterLoadListener = async() =>{
             if (map.loaded()) {
                 const style = map.getStyle();
+                let styleUrl = style.sprite;
+                let strToken = '';
+                if (styleUrl && styleUrl.includes('mapbox://')){
+                    styleUrl = styleUrl
+                    .replace(/mapbox:\/\//g, 'https://')
+                    .replace(/sprites/g,'api.mapbox.com/styles/v1');
+                    styleUrl = `${styleUrl}/sprite`;
+                    strToken = `?access_token=${accessToken}`;
+                }
                 const promise = Promise.all([
-                    this.loadImage(`${style.sprite}@2x.png`),
-                    this.loadJson(`${style.sprite}.json`),
+                    this.loadImage(`${styleUrl}@2x.png${strToken}`),
+                    this.loadJson(`${styleUrl}.json${strToken}`),
                 ]);
                 await promise.then(([image, json]) => {this.setSprite(image, json)});
                 this.updateLegendControl();
