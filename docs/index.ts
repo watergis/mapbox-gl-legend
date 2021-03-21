@@ -1,6 +1,4 @@
 import mapboxgl from 'mapbox-gl';
-// import MapboxAreaSwitcherControl from '../dist/index';
-// import LegendSymbol from '../dist/legend-symbol';
 import { default as MapboxLegendControl, Options} from '../lib/index';
 import '../css/styles.css';
 

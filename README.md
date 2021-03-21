@@ -1,4 +1,5 @@
 # mapbox-gl-legend
+![](https://github.com/watergis/mapbox-gl-legend/workflows/Release%20Draft/badge.svg)
 ![](https://github.com/watergis/mapbox-gl-legend/workflows/Node.js%20Package/badge.svg)
 ![GitHub](https://img.shields.io/github/license/watergis/mapbox-gl-legend)
 
@@ -88,6 +89,20 @@ Specify your layers which you want to add the legend by the control.
   - true: only rendered layers will be shown on legend as default. 
   - false: all layers' legend will be shown as default. 
   - default value will be true.
+
+## How to release
+
+```zsh
+vi package.json
+# update version in package.json
+git add package.json
+git commit -m "v1.X.X"
+git push origin master
+git tag v1.X.X master
+git push --tag
+# release CI will create draft release in Github pages, then publish it if it is ready.
+# publish CI will deploy npmjs and Github Packages.
+```
 
 ## Contribution
 
