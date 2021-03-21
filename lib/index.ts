@@ -1,4 +1,4 @@
-import { accessToken, IControl, Map as MapboxMap } from "mapbox-gl";
+import { accessToken, baseApiUrl, IControl, Map as MapboxMap } from "mapbox-gl";
 import LegendSymbol from 'legend-symbol';
 import axios from 'axios';
 
@@ -317,8 +317,8 @@ export default class MapboxLegendControl implements IControl
                 let strToken = '';
                 if (styleUrl && styleUrl.includes('mapbox://')){
                     styleUrl = styleUrl
-                    .replace(/mapbox:\/\//g, 'https://')
-                    .replace(/sprites/g,'api.mapbox.com/styles/v1');
+                    .replace(/mapbox:\/\//g, baseApiUrl)
+                    .replace(/sprites/g,'/styles/v1');
                     styleUrl = `${styleUrl}/sprite`;
                     strToken = `?access_token=${accessToken}`;
                 }
