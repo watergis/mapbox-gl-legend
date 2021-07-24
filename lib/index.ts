@@ -9,6 +9,7 @@ export type Options = {
     showCheckbox: boolean;
     reverseOrder: boolean;
     onlyRendered: boolean;
+    accesstoken?: string;
 }
 
 /**
@@ -37,6 +38,7 @@ export default class MapboxLegendControl implements IControl
         showCheckbox: true,
         reverseOrder: true,
         onlyRendered: true,
+        accesstoken: undefined,
     };
     private sprite = {
         image: HTMLImageElement,
@@ -321,7 +323,7 @@ export default class MapboxLegendControl implements IControl
                     .replace(/mapbox:\/\//g, baseApiUrl)
                     .replace(/sprites/g,'/styles/v1');
                     styleUrl = `${styleUrl}/sprite`;
-                    strToken = `?access_token=${accessToken}`;
+                    strToken = `?access_token=${this.options.accesstoken || accessToken}`;
                 }
                 const promise = Promise.all([
                     this.loadImage(`${styleUrl}@2x.png${strToken}`),
