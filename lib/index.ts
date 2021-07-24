@@ -1,5 +1,5 @@
 import { accessToken, baseApiUrl, IControl, Map as MapboxMap } from "mapbox-gl";
-import LegendSymbol from 'legend-symbol/dist';
+import LegendSymbol from '@watergis/legend-symbol';
 import axios from 'axios';
 
 
