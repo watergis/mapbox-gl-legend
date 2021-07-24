@@ -1,6 +1,5 @@
 import { accessToken, baseApiUrl, IControl, Map as MapboxMap } from "mapbox-gl";
-// @ts-ignore
-import LegendSymbol from 'legend-symbol/src';
+import LegendSymbol from 'legend-symbol/dist';
 import axios from 'axios';
 
 
