@@ -70,7 +70,9 @@ map.addControl(new MapboxLegendControl(targets, {showDefault: true}), 'bottom-ri
 
 // add legend control with all layers, and it reverse layer order
 map.addControl(new MapboxLegendControl({}, {reverseOrder: false}), 'bottom-left');
-});
+
+// if you want to use basemap from Mapbox in v2
+map.addControl(new MapboxLegendControl({}, {accesstoken: 'your mapbox accesstoken'}));
 ```
 
 Specify your layers which you want to add the legend by the control.
