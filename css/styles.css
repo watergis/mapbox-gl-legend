@@ -81,3 +81,7 @@ td.legend-table-td,th.legend-table-th{
     font-size: 14px; 
     margin: 5px;
 }
+
+td.legend-table-td > svg{
+    height: 17px;
+}
