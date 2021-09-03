@@ -1,4 +1,6 @@
 # mapbox-gl-legend
+![badge](https://github.com/watergis/mapbox-gl-legend/workflows/build/badge.svg)
+![badge](https://github.com/watergis/mapbox-gl-legend/workflows/deploy%20gh-pages/badge.svg)
 ![](https://github.com/watergis/mapbox-gl-legend/workflows/Release%20Draft/badge.svg)
 ![](https://github.com/watergis/mapbox-gl-legend/workflows/Node.js%20Package/badge.svg)
 ![GitHub](https://img.shields.io/github/license/watergis/mapbox-gl-legend)
