@@ -9,6 +9,10 @@ This module adds legend control which is able to create legend panel from mapbox
 
 This module is using source code of [orangemug/legend-symbol](https://github.com/orangemug/legend-symbol). I just adopted this library to normal Mapbox GL Plugin. Thanks so much to develop this library!
 
+## for Maplibre GL JS users
+
+Please consider to use [maplibre-gl-legend](https://github.com/watergis/maplibre-gl-legend) for Maplibre GL JS.
+
 ## Installation:
 
 ```bash
