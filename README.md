@@ -15,6 +15,50 @@ This module is using source code of [orangemug/legend-symbol](https://github.com
 npm i @watergis/mapbox-gl-legend --save
 ```
 
+## Use CDN
+
+```html
+<link href='https://watergis.github.io/mapbox-gl-legend/mapbox-gl-legend.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.13.1/mapbox-gl.js'></script>
+<script src="https://watergis.github.io/mapbox-gl-legend/mapbox-gl-legend.js"></script>
+<script>
+map.on('load', function() {
+    const targets = {
+        'pipeline': 'Pipeline',
+        'pipeline_annotation': 'Pipeline Label', 
+        'meter': 'Water Meter',
+        'flow meter': 'Flow Meter', 
+        'valve': 'Valve', 
+        'firehydrant': 'Fire Hydrant', 
+        'washout': 'Washout',
+        'tank': 'Tank', 
+        'tank_annotation': 'Tank Label', 
+        'wtp': 'WTP', 
+        'wtp_annotation': 'WTP Label', 
+        'intake': 'Intake', 
+        'intake_annotation': 'Intake Label', 
+        'parcels': 'Parcels', 
+        'parcels_annotation': 'Parcels Label', 
+        'village': 'Village', 
+        'village_annotation': 'Village Label', 
+        'dma': 'DMA',
+        'dma-annotation': 'DMA Label', 
+        'contour-line': 'Countour',
+        'contour-label': 'Contour Label',
+        'hillshade': 'Hillshade'
+    };
+    map.addControl(new watergis.MapboxLegendControl(targets, {
+        showDefault: false, 
+        showCheckbox: false, 
+        onlyRendered: true,
+        reverseOrder: true
+    }), 'top-right');
+})
+</script>
+```
+
+Furthermore, you may download specific version's scripts and css locally from [release](https://github.com/watergis/mapbox-gl-export/releases) page.
+
 ## Demo:
 
 Try [codesandbox](https://codesandbox.io/s/mapbox-gl-legend-0x6f0).
@@ -35,7 +79,7 @@ open [http://localhost:8080](http://localhost:8080).
 ## Usage:
 
 ```ts
-import MapboxLegendControl from "@watergis/mapbox-gl-legend";
+import { MapboxLegendControl } from "@watergis/mapbox-gl-legend";
 import '@watergis/mapbox-gl-legend/css/styles.css';
 import mapboxgl from 'mapbox-gl';
 

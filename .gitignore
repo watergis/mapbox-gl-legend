@@ -1,5 +1,6 @@
 dist
 docs/bundle*.js
+docs/mapbox-gl-legend.*
 
 # Logs
 logs
