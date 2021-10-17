@@ -1,5 +1,5 @@
 import mapboxgl from 'mapbox-gl';
-import { default as MapboxLegendControl, Options} from '../lib/index';
+import { MapboxLegendControl, LegendOptions } from '../lib/index';
 import '../css/styles.css';
 
 (()=>{
@@ -40,7 +40,7 @@ import '../css/styles.css';
             'hillshade': 'Hillshade'
         };
         // add legend control without checkbox, and it will be hide as default
-        let options : Options = {
+        let options : LegendOptions = {
             showDefault: false, 
             showCheckbox: false, 
             onlyRendered: true,
