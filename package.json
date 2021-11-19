@@ -4,7 +4,6 @@
   "description": "This module adds legend control which is able to create legend panel from mapbox style to mapbox-gl",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "browser": "dist/cdn/mapbox-gl-legend.js",
   "files": [
     "dist",
     "css"
