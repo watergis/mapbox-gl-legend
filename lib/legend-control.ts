@@ -134,7 +134,7 @@ export default class MapboxLegendControl implements IControl
         const zoom = map?.getZoom();
         const sprite = this.sprite;
         let symbol = LegendSymbol({sprite, zoom, layer});
-        if (!symbol) return;
+
         var tr = document.createElement('TR');
 
         const td0 = this.createLayerCheckbox(layer);
@@ -143,46 +143,76 @@ export default class MapboxLegendControl implements IControl
         // create legend symbol
         var td1 = document.createElement('TD');
         td1.className='legend-table-td';
-        switch(symbol.element){
-            case 'div':
-                if ((symbol.attributes.style.backgroundImage && !["url(undefined)","url(null)"].includes(symbol.attributes.style.backgroundImage))){
-                    var img = document.createElement('img');
-                    img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
-                    img.alt = layer.id;
-                    img.style.cssText = `height: 17px;`
-                    td1.appendChild(img)      
-                }
-                td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
-                td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
-                td1.style.backgroundSize = symbol.attributes.style.backgroundSize;
-                td1.style.backgroundRepeat = symbol.attributes.style.backgroundRepeat;
-                td1.style.opacity = symbol.attributes.style.opacity;
 
-                break;
-            case 'svg':
-                let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.style.cssText = 'height: 17px;'
-                svg.setAttributeNS(null, 'version', '1.1')
-                Object.keys(symbol.attributes).forEach(k=>{
-                    svg.setAttribute(k, symbol.attributes[k]);
-                    let group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    symbol.children.forEach(child=>{
-                        var c = document.createElementNS('http://www.w3.org/2000/svg', child.element);
-                        Object.keys(child.attributes).forEach(k2=>{
-                            c.setAttributeNS(null, k2, child.attributes[k2]);
+        if (!symbol) {
+            const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            const iconPath = document.createElementNS(
+                'http://www.w3.org/2000/svg',
+                'path'
+            );
+
+            iconSvg.setAttribute('fill', 'none');
+            iconSvg.setAttribute('viewBox', '0 0 24 24');
+            iconSvg.setAttribute('stroke', 'black');
+            iconSvg.classList.add('post-icon');
+
+            iconPath.setAttribute(
+                'd',
+                'M21,0H3A3,3,0,0,0,0,3V21a3,3,0,0,0,3,3H21a3,3,0,0,0,3-3V3A3,3,0,0,0,21,0ZM3,2H21a1,1,0,0,1,1,1V15.86L14.18,9.35a5.06,5.06,0,0,0-6.39-.06L2,13.92V3A1,1,0,0,1,3,2ZM21,22H3a1,1,0,0,1-1-1V16.48l7-5.63a3.06,3.06,0,0,1,3.86,0L22,18.47V21A1,1,0,0,1,21,22Z"/><path d="M18,9a3,3,0,1,0-3-3A3,3,0,0,0,18,9Zm0-4a1,1,0,1,1-1,1A1,1,0,0,1,18,5Z'
+            );
+            iconPath.setAttribute('stroke-linecap', 'round');
+            iconPath.setAttribute('stroke-linejoin', 'round');
+            iconPath.setAttribute('stroke-width', '2');
+
+            iconSvg.appendChild(iconPath);
+
+            var label2 = document.createElement('label');
+            label2.textContent = (this.targets && this.targets[layer.id])?this.targets[layer.id]:layer.id;
+            td1.appendChild(iconSvg)
+
+        } else {
+            switch(symbol.element){
+                case 'div':
+                    if ((symbol.attributes.style.backgroundImage && !["url(undefined)","url(null)"].includes(symbol.attributes.style.backgroundImage))){
+                        var img = document.createElement('img');
+                        img.src = symbol.attributes.style.backgroundImage.replace('url(','').replace(')','');
+                        img.alt = layer.id;
+                        img.style.cssText = `height: 17px;`
+                        td1.appendChild(img)      
+                    }
+                    td1.style.backgroundColor = symbol.attributes.style.backgroundColor;
+                    td1.style.backgroundPosition = symbol.attributes.style.backgroundPosition;
+                    td1.style.backgroundSize = symbol.attributes.style.backgroundSize;
+                    td1.style.backgroundRepeat = symbol.attributes.style.backgroundRepeat;
+                    td1.style.opacity = symbol.attributes.style.opacity;
+    
+                    break;
+                case 'svg':
+                    let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.style.cssText = 'height: 17px;'
+                    svg.setAttributeNS(null, 'version', '1.1')
+                    Object.keys(symbol.attributes).forEach(k=>{
+                        svg.setAttribute(k, symbol.attributes[k]);
+                        let group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                        symbol.children.forEach(child=>{
+                            var c = document.createElementNS('http://www.w3.org/2000/svg', child.element);
+                            Object.keys(child.attributes).forEach(k2=>{
+                                c.setAttributeNS(null, k2, child.attributes[k2]);
+                            })
+                            group.appendChild(c);
                         })
-                        group.appendChild(c);
+                        svg.appendChild(group);
                     })
-                    svg.appendChild(group);
-                })
-                var label2 = document.createElement('label');
-                label2.textContent = (this.targets && this.targets[layer.id])?this.targets[layer.id]:layer.id;
-                td1.appendChild(svg)
-                break;
-            default:
-                return;
+                    var label2 = document.createElement('label');
+                    label2.textContent = (this.targets && this.targets[layer.id])?this.targets[layer.id]:layer.id;
+                    td1.appendChild(svg)
+                    break;
+                default:
+                    console.log(symbol.element)
+                    return;
+            }
         }
-
+        
         // create layer label
         var td2 = document.createElement('TD');
         td2.className='legend-table-td';
