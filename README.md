@@ -51,7 +51,7 @@ map.on('load', function() {
         'contour-label': 'Contour Label',
         'hillshade': 'Hillshade'
     };
-    map.addControl(new watergis.MapboxLegendControl(targets, {
+    map.addControl(new MapboxLegendControl(targets, {
         showDefault: false, 
         showCheckbox: false, 
         onlyRendered: true,

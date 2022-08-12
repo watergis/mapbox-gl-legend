@@ -30,8 +30,9 @@ module.exports = {
     },
     devtool: 'inline-source-map',
     devServer: {
-        watchContentBase: true,
-        contentBase: './docs',
+        static: {
+            directory: path.join(__dirname, 'docs'),
+        },
     },
     externals: {
         'mapbox-gl': 'mapboxgl'

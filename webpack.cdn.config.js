@@ -6,7 +6,7 @@ module.exports = {
     entry: './lib/index.ts',
     plugins: [],
     output: {
-        library: 'watergis',
+        // library: 'watergis',
         libraryTarget: 'umd',
         filename: 'mapbox-gl-legend.js',
         path: path.resolve(__dirname, 'dist/cdn'),
