@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-style-spec": "^13.25.0",
-    "@watergis/legend-symbol": "^0.2.2",
+    "@watergis/legend-symbol": "^0.2.3",
     "axios": "^0.27.2",
     "mapbox-gl": "^1.13.2"
   }
