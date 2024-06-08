@@ -65,5 +65,16 @@ import '../css/styles.css';
             reverseOrder: true
         }
         map.addControl(new MapboxLegendControl({}, options), 'bottom-left');
+
+        // add legent control with custom title
+        options = {
+            showDefault: true, 
+            showCheckbox: true, 
+            onlyRendered: true,
+            reverseOrder: false,
+            title: 'Custom Legend'
+        }
+
+        map.addControl(new MapboxLegendControl(targets, options), 'top-right');
     });
 })()

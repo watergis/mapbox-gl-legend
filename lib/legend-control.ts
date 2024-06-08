@@ -9,6 +9,7 @@ export type LegendOptions = {
     reverseOrder: boolean;
     onlyRendered: boolean;
     accesstoken?: string;
+    title?: string;
 }
 
 /**
@@ -38,6 +39,7 @@ export default class MapboxLegendControl implements IControl
         reverseOrder: true,
         onlyRendered: true,
         accesstoken: undefined,
+        title: undefined
     };
     private sprite = {
         image: HTMLImageElement,
@@ -325,7 +327,7 @@ export default class MapboxLegendControl implements IControl
 
         const legendLabel = document.createElement('label');
         legendLabel.classList.add("mapboxgl-legend-title-label");
-        legendLabel.textContent = "Legend";
+        legendLabel.textContent = this.options.title || 'Legend';
         this.legendContainer.appendChild(legendLabel)
         this.legendContainer.appendChild(document.createElement("br"));
 

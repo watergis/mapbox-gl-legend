@@ -123,6 +123,9 @@ map.addControl(new MapboxLegendControl({}, {reverseOrder: false}), 'bottom-left'
 
 // if you want to use basemap from Mapbox in v2
 map.addControl(new MapboxLegendControl({}, {accesstoken: 'your mapbox accesstoken'}));
+
+// if you want to customize the title of the legend
+map.addControl(new MapboxLegendControl(targets, {title: 'Some Custom Title'}), 'top-right');
 ```
 
 Specify your layers which you want to add the legend by the control.
@@ -144,6 +147,9 @@ Specify your layers which you want to add the legend by the control.
   - true: only rendered layers will be shown on legend as default. 
   - false: all layers' legend will be shown as default. 
   - default value will be true.
+- title
+  - specify the title of the legend. 
+  - default value is `Legend` if you don't specify the option.
 
 ## How to release
 
