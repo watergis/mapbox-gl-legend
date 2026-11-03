@@ -1,3 +1,5 @@
+# This repository was migrated as a monorepo under [maplibre-gl-legend](https://github.com/watergis/maplibre-gl-legend/tree/main/packages/mapbox-gl-legend)
+
 # mapbox-gl-legend
 ![badge](https://github.com/watergis/mapbox-gl-legend/workflows/build/badge.svg)
 ![badge](https://github.com/watergis/mapbox-gl-legend/workflows/deploy%20gh-pages/badge.svg)
